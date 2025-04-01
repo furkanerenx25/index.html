@@ -20,7 +20,24 @@
             overflow: hidden;
         }
 
-        h1 {
+        #startButton {
+            font-size: 40px;
+            padding: 20px 40px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        #startButton:hover {
+            background-color: #cc0000;
+        }
+
+        #message {
+            display: none;
             position: absolute;
             top: 20%;
             font-size: 50px;
@@ -59,6 +76,7 @@
         }
 
         canvas {
+            display: none;
             position: absolute;
             top: 0;
             left: 0;
@@ -70,66 +88,75 @@
 </head>
 <body>
 
-    <h1>🎉 Doğum Günün Kutlu Olsun Kumru! 🎂</h1>
-
+    <button id="startButton">Tıkla</button>
+    <h1 id="message">🎉 Doğum Günün Kutlu Olsun Kumru! 🎂</h1>
     <canvas id="confetti"></canvas>
 
     <script>
-        function createBalloon() {
-            const balloon = document.createElement("div");
-            balloon.classList.add("balloon");
-            document.body.appendChild(balloon);
+        document.getElementById("startButton").addEventListener("click", function() {
+            this.style.display = "none"; 
+            document.getElementById("message").style.display = "block";
+            document.getElementById("confetti").style.display = "block";
+            startAnimations();
+        });
 
-            const randomX = Math.random() * window.innerWidth;
-            balloon.style.left = `${randomX}px`;
+        function startAnimations() {
+            function createBalloon() {
+                const balloon = document.createElement("div");
+                balloon.classList.add("balloon");
+                document.body.appendChild(balloon);
 
-            balloon.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                const randomX = Math.random() * window.innerWidth;
+                balloon.style.left = `${randomX}px`;
 
-            setTimeout(() => {
-                balloon.remove();
-            }, 5000);
+                balloon.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+                setTimeout(() => {
+                    balloon.remove();
+                }, 5000);
+            }
+
+            setInterval(createBalloon, 500);
+
+            const canvas = document.getElementById("confetti");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const confetti = [];
+
+            function createConfettiPiece() {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+                    size: Math.random() * 8 + 2,
+                    speed: Math.random() * 3 + 1
+                };
+            }
+
+            for (let i = 0; i < 200; i++) {
+                confetti.push(createConfettiPiece());
+            }
+
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confetti.forEach((piece) => {
+                    ctx.fillStyle = piece.color;
+                    ctx.beginPath();
+                    ctx.arc(piece.x, piece.y, piece.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    piece.y += piece.speed;
+                    if (piece.y > canvas.height) {
+                        piece.y = -10;
+                        piece.x = Math.random() * canvas.width;
+                    }
+                });
+                requestAnimationFrame(drawConfetti);
+            }
+
+            drawConfetti();
         }
-
-        setInterval(createBalloon, 500);
-
-        const canvas = document.getElementById("confetti");
-        const ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const confetti = [];
-
-        function createConfettiPiece() {
-            return {
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                color: `hsl(${Math.random() * 360}, 100%, 60%)`,
-                size: Math.random() * 8 + 2,
-                speed: Math.random() * 3 + 1
-            };
-        }
-
-        for (let i = 0; i < 200; i++) {
-            confetti.push(createConfettiPiece());
-        }
-
-        function drawConfetti() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            confetti.forEach((piece) => {
-                ctx.fillStyle = piece.color;
-                ctx.beginPath();
-                ctx.arc(piece.x, piece.y, piece.size, 0, Math.PI * 2);
-                ctx.fill();
-                piece.y += piece.speed;
-                if (piece.y > canvas.height) {
-                    piece.y = -10;
-                    piece.x = Math.random() * canvas.width;
-                }
-            });
-            requestAnimationFrame(drawConfetti);
-        }
-
-        drawConfetti();
     </script>
 
 </body>
