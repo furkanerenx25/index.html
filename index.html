@@ -7,27 +7,28 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #dbeafe, #fbcfe8);
+      background: #1e1e1e;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      color: white;
     }
     .container {
       display: flex;
-      gap: 20px;
+      gap: 40px;
       align-items: center;
     }
     .face-box {
       position: relative;
-      width: 250px;
-      height: 250px;
+      width: 350px;
+      height: 350px;
       border-radius: 50%;
       overflow: hidden;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      background: #eee;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      background: #444;
     }
     .face-box img {
       width: 100%;
@@ -40,25 +41,25 @@
     }
     .punch {
       position: absolute;
-      width: 60px;
-      height: 60px;
+      width: 90px;
+      height: 90px;
       pointer-events: none;
       animation: punchAnim 0.4s forwards;
     }
     @keyframes punchAnim {
-      from { transform: scale(0.2); opacity: 1; }
+      from { transform: scale(0.3); opacity: 1; }
       to { transform: scale(1.5); opacity: 0; }
     }
     .ahh {
       position: absolute;
-      bottom: 10px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: red;
+      background: crimson;
       color: white;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 16px;
       opacity: 0;
       animation: fadeAhh 0.6s forwards;
     }
@@ -70,12 +71,15 @@
     .selector {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
       align-items: center;
     }
+    .selector h3 {
+      margin-bottom: 10px;
+    }
     .selector img {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       cursor: pointer;
       border: 3px solid transparent;
@@ -83,7 +87,7 @@
       object-fit: cover;
     }
     .selector img.active {
-      border: 3px solid blue;
+      border: 3px solid deepskyblue;
     }
   </style>
 </head>
@@ -111,10 +115,10 @@
 
       // Yumruk resmi ekle
       const punch = document.createElement('img');
-      punch.src = 'https://cdn-icons-png.flaticon.com/512/3197/3197963.png';
+      punch.src = 'https://cdn-icons-png.flaticon.com/512/7309/7309781.png'; // boks eldiveni ikonu
       punch.className = 'punch';
-      punch.style.left = (e.offsetX - 30) + 'px';
-      punch.style.top = (e.offsetY - 30) + 'px';
+      punch.style.left = (e.offsetX - 45) + 'px';
+      punch.style.top = (e.offsetY - 45) + 'px';
       faceBox.appendChild(punch);
       setTimeout(() => punch.remove(), 400);
 
