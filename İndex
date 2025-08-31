@@ -1,108 +1,136 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yumruk Tepkili Maskot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #dbeafe, #fbcfe8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .face-box {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      background: #eee;
+    }
+    .face-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s;
+    }
+    .face-box.hit img {
+      transform: scale(0.9);
+    }
+    .punch {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+      animation: punchAnim 0.4s forwards;
+    }
+    @keyframes punchAnim {
+      from { transform: scale(0.2); opacity: 1; }
+      to { transform: scale(1.5); opacity: 0; }
+    }
+    .ahh {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: red;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      opacity: 0;
+      animation: fadeAhh 0.6s forwards;
+    }
+    @keyframes fadeAhh {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .selector {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .selector img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: border 0.2s;
+      object-fit: cover;
+    }
+    .selector img.active {
+      border: 3px solid blue;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="face-box" id="faceBox">
+      <img id="faceImg" src="face1.png" alt="maskot">
+    </div>
 
-export default function App() {
-  const faces = ["/face1.png", "/face2.png", "/face3.png"];
-  const [faceUrl, setFaceUrl] = useState(faces[0]);
-  const [hitPosition, setHitPosition] = useState(null);
-  const [isHit, setIsHit] = useState(false);
+    <div class="selector">
+      <h3>Yüz Seç</h3>
+      <img src="face1.png" class="active" onclick="selectFace(this, 'face1.png')">
+      <img src="face2.png" onclick="selectFace(this, 'face2.png')">
+      <img src="face3.png" onclick="selectFace(this, 'face3.png')">
+    </div>
+  </div>
 
-  const handleClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHitPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    setIsHit(true);
-    setTimeout(() => setIsHit(false), 500);
-  };
+  <script>
+    const faceBox = document.getElementById('faceBox');
+    const faceImg = document.getElementById('faceImg');
 
-  const resetPosition = () => {
-    setHitPosition(null);
-    setIsHit(false);
-  };
+    faceBox.addEventListener('click', (e) => {
+      faceBox.classList.add('hit');
+      setTimeout(() => faceBox.classList.remove('hit'), 200);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-pink-100 flex flex-col items-center justify-center p-4">
-      <div className="max-w-3xl w-full grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Sol taraf: maskot */}
-        <div className="md:col-span-3 flex flex-col items-center">
-          <header className="flex items-center justify-between mb-4 w-full">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Yumruk Tepkili Maskot</h1>
-            <button
-              onClick={resetPosition}
-              className="px-3 py-2 rounded-2xl shadow bg-white hover:shadow-md active:scale-[0.98] transition text-sm font-medium"
-            >
-              Sıfırla
-            </button>
-          </header>
+      // Yumruk resmi ekle
+      const punch = document.createElement('img');
+      punch.src = 'https://cdn-icons-png.flaticon.com/512/3197/3197963.png';
+      punch.className = 'punch';
+      punch.style.left = (e.offsetX - 30) + 'px';
+      punch.style.top = (e.offsetY - 30) + 'px';
+      faceBox.appendChild(punch);
+      setTimeout(() => punch.remove(), 400);
 
-          <div
-            onClick={handleClick}
-            className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden bg-gray-200 shadow-lg cursor-pointer select-none"
-          >
-            <motion.img
-              key={faceUrl}
-              src={faceUrl}
-              alt="maskot yüz"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className={`w-full h-full object-cover transition ${
-                isHit ? "scale-90" : "scale-100"
-              }`}
-            />
+      // Ahh yazısı ekle
+      const ahh = document.createElement('div');
+      ahh.className = 'ahh';
+      ahh.textContent = 'Ahh!';
+      faceBox.appendChild(ahh);
+      setTimeout(() => ahh.remove(), 600);
+    });
 
-            <AnimatePresence>
-              {hitPosition && (
-                <motion.div
-                  key={hitPosition.x + hitPosition.y + Date.now()}
-                  initial={{ scale: 0, opacity: 1 }}
-                  animate={{ scale: 1.5, opacity: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="absolute"
-                  style={{
-                    left: hitPosition.x - 24,
-                    top: hitPosition.y - 24,
-                  }}
-                >
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/3197/3197963.png"
-                    alt="boks eldiveni"
-                    className="w-12 h-12"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {isHit && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-red-500 text-white px-2 py-1 text-xs rounded-lg shadow"
-              >
-                Ahh!
-              </motion.div>
-            )}
-          </div>
-        </div>
-
-        {/* Sağ taraf: yüz seçici */}
-        <div className="md:col-span-1 flex flex-col gap-4">
-          <h2 className="font-semibold text-lg">Yüz Seç</h2>
-          <div className="flex md:flex-col gap-2">
-            {faces.map((src, idx) => (
-              <img
-                key={idx}
-                src={src}
-                onClick={() => setFaceUrl(src)}
-                className={`w-16 h-16 object-cover rounded-full cursor-pointer border-4 transition ${
-                  faceUrl === src ? "border-blue-500" : "border-transparent"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    function selectFace(el, src) {
+      faceImg.src = src;
+      document.querySelectorAll('.selector img').forEach(img => img.classList.remove('active'));
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>
