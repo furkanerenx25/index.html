@@ -3,137 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yumruk Tepkili Maskot</title>
+  <title>Boks Maskotu</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
+      margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      color: white;
-    }
-    .container {
-      display: flex;
-      gap: 40px;
-      align-items: center;
-    }
-    .face-box {
-      position: relative;
-      width: 350px;
-      height: 350px;
-      border-radius: 50%;
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-      background: #444;
-    }
-    .face-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.2s;
-    }
-    .face-box.hit img {
-      transform: scale(0.9);
-    }
-    .punch {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      pointer-events: none;
-      animation: punchAnim 0.4s forwards;
-    }
-    @keyframes punchAnim {
-      from { transform: scale(0.3); opacity: 1; }
-      to { transform: scale(1.5); opacity: 0; }
-    }
-    .ahh {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: crimson;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 16px;
-      opacity: 0;
-      animation: fadeAhh 0.6s forwards;
-    }
-    @keyframes fadeAhh {
-      0% { opacity: 0; }
-      20% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-    .selector {
-      display: flex;
+      height: 100vh;
+      background-color: #2f2f2f; /* antrasit */
       flex-direction: column;
-      gap: 15px;
-      align-items: center;
+      color: white;
+      font-family: Arial, sans-serif;
     }
-    .selector h3 {
-      margin-bottom: 10px;
+
+    .container {
+      position: relative;
+      text-align: center;
     }
-    .selector img {
-      width: 70px;
-      height: 70px;
+
+    #face {
+      width: 300px; /* yüz daha büyük */
+      height: 300px;
+      object-fit: cover;
       border-radius: 50%;
       cursor: pointer;
-      border: 3px solid transparent;
-      transition: border 0.2s;
-      object-fit: cover;
+      z-index: 2;
+      position: relative;
     }
-    .selector img.active {
-      border: 3px solid deepskyblue;
+
+    #body {
+      width: 320px;
+      margin-top: -60px; /* yüzün altına oturtmak için */
+      z-index: 1;
+    }
+
+    .glove {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: url("glove.png") no-repeat center/contain;
+      pointer-events: none;
+      animation: punch 0.3s ease-out forwards;
+    }
+
+    @keyframes punch {
+      0% { transform: scale(0.5) translateY(0); opacity: 0.8; }
+      50% { transform: scale(1.2) translateY(-20px); opacity: 1; }
+      100% { transform: scale(0.5) translateY(0); opacity: 0; }
+    }
+
+    .sidebar {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: rgba(0,0,0,0.5);
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    .sidebar img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 5px;
+      cursor: pointer;
+      border: 2px solid white;
+    }
+
+    .sidebar img:hover {
+      border-color: red;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="face-box" id="faceBox">
-      <img id="faceImg" src="face1.png" alt="maskot">
-    </div>
+    <img id="face" src="face1.png" alt="Maskot Yüzü">
+    <img id="body" src="body.png" alt="Maskot Gövdesi">
+  </div>
 
-    <div class="selector">
-      <h3>Yüz Seç</h3>
-      <img src="face1.png" class="active" onclick="selectFace(this, 'face1.png')">
-      <img src="face2.png" onclick="selectFace(this, 'face2.png')">
-      <img src="face3.png" onclick="selectFace(this, 'face3.png')">
-    </div>
+  <div class="sidebar">
+    <h4>Yüz Seç</h4>
+    <img src="face1.png" onclick="changeFace('face1.png')">
+    <img src="face2.png" onclick="changeFace('face2.png')">
+    <img src="face3.png" onclick="changeFace('face3.png')">
   </div>
 
   <script>
-    const faceBox = document.getElementById('faceBox');
-    const faceImg = document.getElementById('faceImg');
+    const face = document.getElementById('face');
+    face.addEventListener('click', (e) => {
+      const glove = document.createElement('div');
+      glove.className = 'glove';
+      glove.style.left = (e.pageX - 60) + "px";
+      glove.style.top = (e.pageY - 60) + "px";
+      document.body.appendChild(glove);
 
-    faceBox.addEventListener('click', (e) => {
-      faceBox.classList.add('hit');
-      setTimeout(() => faceBox.classList.remove('hit'), 200);
+      setTimeout(() => glove.remove(), 300);
 
-      // Yumruk resmi ekle
-      const punch = document.createElement('img');
-      punch.src = 'https://cdn-icons-png.flaticon.com/512/7309/7309781.png'; // boks eldiveni ikonu
-      punch.className = 'punch';
-      punch.style.left = (e.offsetX - 45) + 'px';
-      punch.style.top = (e.offsetY - 45) + 'px';
-      faceBox.appendChild(punch);
-      setTimeout(() => punch.remove(), 400);
-
-      // Ahh yazısı ekle
-      const ahh = document.createElement('div');
-      ahh.className = 'ahh';
-      ahh.textContent = 'Ahh!';
-      faceBox.appendChild(ahh);
-      setTimeout(() => ahh.remove(), 600);
+      face.style.transform = "scale(0.9)";
+      setTimeout(() => face.style.transform = "scale(1)", 200);
     });
 
-    function selectFace(el, src) {
-      faceImg.src = src;
-      document.querySelectorAll('.selector img').forEach(img => img.classList.remove('active'));
-      el.classList.add('active');
+    function changeFace(src) {
+      face.src = src;
     }
   </script>
 </body>
